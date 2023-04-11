@@ -1,0 +1,51 @@
+{
+  "name": "tiktok-backend",
+  "version": "1.0.0",
+  "description": "tiktok-backend",
+  "main": "./src/index.js",
+  "scripts": {
+    "beautiful": "prettier --single-quote --trailing-comma all --tab-width 4 --write src/**/*.{js,json,scss}",
+    "start": "nodemon --inspect src/index.js",
+    "server": "nodemon index.js",
+    "watch": "node-sass --watch src/resources/scss --output src/public/css",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NguyenThiTuongVyB1809543/tiktok-backend.git"
+  },
+  "author": "TuongDi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NguyenThiTuongVyB1809543/tiktok-backend/issues"
+  },
+  "homepage": "https://github.com/NguyenThiTuongVyB1809543/tiktok-backend#readme",
+  "lint-staged": {
+    "src/**/*.{js,json,scss}": "prettier --single-quote --trailing-comma all --tab-width 4 --write "
+  },
+  "husky": {
+    "hook": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "dependencies": {
+    "@formkit/auto-animate": "^1.0.0-beta.6",
+    "express": "^4.18.2",
+    "express-handlebars": "^6.0.7",
+    "method-override": "^3.0.0",
+    "mongoose": "^6.0.12",
+    "mongoose-delete": "^0.5.4",
+    "mongoose-slug-generator": "^1.0.4"
+  },
+  "devDependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.1.2",
+    "mongoose": "^7.0.3",
+    "morgan": "^1.10.0",
+    "node-sass": "^8.0.0",
+    "nodemon": "^2.0.22",
+    "prettier": "^2.8.4"
+  }
+}

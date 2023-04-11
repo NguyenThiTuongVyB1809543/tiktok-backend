@@ -1,0 +1,17 @@
+//Chỉ viết code ra file app.scss hoặc chỉ những file nằm trong resources/scss
+@import 'variables';
+h1 {
+    color: $red_color;
+}
+
+.user-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    margin-right: 4px;
+}
+
+.checkbox-select-all-options {
+    width: 140px;
+    margin: 0 16px;
+}
