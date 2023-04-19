@@ -15,7 +15,8 @@ const userController = require('../app/controllers/UserController');
 // router.get('/1/videos', userController.getVideoOfUser);
 
 // /users/suggested?page=1&per_page=12
-router.get('/suggested', userController.getSuggestedUserList);
+router.get('/suggested', userController.getSuggestedUserList, userController.chongTreo );
+router.get('/suggested', userController.getSuggestedUserList  );
 
 // /users/@sondnf8
 router.get('/@:nickname', userController.getAnUser);

@@ -4,33 +4,36 @@ const slug = require('mongoose-slug-generator');
 var mongooseDelete = require('mongoose-delete');
 
 const UserSchema = new Schema(
-    {
-        // file_url: { type: String },
-        // thumb_url: { type: String },
-        // description: { type: String },
-        // is_liked: { type: String },
-        // comments_count: { type: String },
-        // likes_count: { type: String },
-        // shares_count: { type: String },
-        // slug: { type: String, slug: 'name', unique: true },
-        // createdAt: { type: Date, default: Date.now }, //lưu thời gian bản ghi được tạo
-        // updatedAt: { type: Date, default: Date.now }, //lưu thời gian bản ghi được cập nhật
-
-        email: String,
-        password: String,
-        type: String,
-        nickname: String,
-        avatar: String,
-        fullname: String,
-        first_name: String,
-        last_name: String,
-        is_followed: String,
-        followings_count: String,                                                                                       
-        followers_count: String,                                                                                       
-        likes_count: String,                                                                                       
-        bio: String,                                                                                
-
-
+    // {
+    //     email: String,
+    //     password: String,
+    //     type: String,
+    //     nickname: String,
+    //     avatar: String,
+    //     fullname: String,
+    //     first_name: String,
+    //     last_name: String,
+    //     is_followed: String,
+    //     followings_count: String,                                                                                       
+    //     followers_count: String,                                                                                       
+    //     likes_count: String,                                                                                       
+    //     bio: String,              
+    // },
+     
+    { 
+        email: { type: String },
+        nickname: { type: String },
+        password: { type: String },
+        displayName: { type: String },
+        bio: { type: String },
+        avatar: { type: String },// URL to user's profile picture
+        coverImage: { type: String },
+        followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],// Array of user IDs for users who follow this user
+        following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],// Array of user IDs for users this user follows
+        videos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Video' }],
+        likedVideos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Video' }],
+        notifications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notification' }],
+        createdAt: { type: Date, default: Date.now }
     },
     {
         timestamps: true,

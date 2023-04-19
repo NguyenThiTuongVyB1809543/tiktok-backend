@@ -4,8 +4,8 @@ const router = express.Router();
 const videoController = require('../app/controllers/VideoController');
 
 // /videos?type=for-you&page=1
-// router.get('/', videoController.getVideoList);
-// router.get('/:id', videoController.getVideo);
+router.get('/', videoController.getVideoList, videoController.chongTreo);
+router.get('/:id', videoController.getVideo);
 
 // [Auth]
 // /videos/12?_method=PATCH

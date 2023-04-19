@@ -10,19 +10,53 @@ class UserController {
             .catch(next);
     }
 
-    //[GET] /users/suggested
+    // // [GET] /users/suggested?page=1&per_page=12
     getSuggestedUserList(req, res, next) {
-        Users.find({})
-            .then(user => res.json(user))
-            .catch(next);
+        if(['1', '12'].includes(req.query.page )){
+            if(['5','10', '15', '20'].includes(req.query.per_page )){  
+                return next();
+            } 
+        }
+        res.status(403).json({
+            message: 'Access denied, khum cho vao'
+        })
     }
+    chongTreo(req, res, next) { //1 middleware nên có next() hoặc phải có res.send() nếu không sẽ bị treo 
+        Users.find({})
+            .then(user => res.json(
+                user
+                ))
+            .catch(next);
+    } 
+
+    //[GET] /users/suggested
+    // getSuggestedUserList(req, res, next) {
+    //     Users.find({})
+    //         .then(user => res.json(user))
+    //         .catch(next);
+    // }
 
     //[GET] /users/@:nickname
-    getAnUser(req, res, next) {
-        Users.findOne({nickname: req.params.nickname})
-            .then(user => res.json(user))
-            .catch(next);
-    }
+    getAnUser = async (req, res) => {
+        const { nickname } = req.params;
+      
+        // Look for a user with the provided nickname
+        const user = await Users.findOne({ nickname });
+      
+        // If no user is found, return an error
+        if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+        }
+      
+        // If the user is found, return the user data
+        res.status(200).json({ user });
+      };  
+      
+      
+      
+      
+      
+      
 
 
 
