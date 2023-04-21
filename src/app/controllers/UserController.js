@@ -10,7 +10,7 @@ class UserController {
             .catch(next);
     }
 
-    // // [GET] /users/suggested?page=1&per_page=12
+    // // [GET] /users/suggested?page=1&per_page=15
     getSuggestedUserList(req, res, next) {
         if(['1', '12'].includes(req.query.page )){
             if(['5','10', '15', '20'].includes(req.query.per_page )){  
@@ -37,20 +37,28 @@ class UserController {
     // }
 
     //[GET] /users/@:nickname
-    getAnUser = async (req, res) => {
-        const { nickname } = req.params;
+    // getAnUser = async (req, res) => {
+    //     const { nickname } = req.params;
       
-        // Look for a user with the provided nickname
-        const user = await Users.findOne({ nickname });
+    //     // Look for a user with the provided nickname
+    //     const user = await Users.findOne({ nickname });
       
-        // If no user is found, return an error
-        if (!user) {
-          return res.status(404).json({ message: 'User not found' });
-        }
+    //     // If no user is found, return an error
+    //     if (!user) {
+    //       return res.status(404).json({ message: 'User not found' });
+    //     }
       
-        // If the user is found, return the user data
-        res.status(200).json({ user });
-      };  
+    //     // If the user is found, return the user data
+    //     res.status(200).json(user);
+    // };  
+    getAnUser (req, res, next) { 
+        Users.findOne({nickname: req.params.nickname}). populate('videos').exec()
+            .then(user => res.json(user))
+            .catch(err => {
+                console.log('error: ', err);
+            });
+
+    }
       
       
       

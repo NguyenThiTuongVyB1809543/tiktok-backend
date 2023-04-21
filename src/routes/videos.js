@@ -3,9 +3,15 @@ const express = require('express');
 const router = express.Router();
 const videoController = require('../app/controllers/VideoController');
 
-// /videos?type=for-you&page=1
-router.get('/', videoController.getVideoList, videoController.chongTreo);
+
+
+
+router.get('/show', videoController.showVideo);
 router.get('/:id', videoController.getVideo);
+// /videos?type=for-you&page=1
+router.post('/', videoController.uploadVideo);
+router.get('/', videoController.getVideoList, videoController.chongTreo);
+// router.get('/', videoController.getVideoList);
 
 // [Auth]
 // /videos/12?_method=PATCH

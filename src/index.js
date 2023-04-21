@@ -8,6 +8,8 @@ const app = express();
 const port = 8000;
 const methodOverride = require('method-override');
 const cors = require('cors')
+// require('dotenv').config()
+
 
 app.use(cors())  
 app.use(methodOverride('_method'));

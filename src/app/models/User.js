@@ -25,7 +25,14 @@ const UserSchema = new Schema(
         nickname: { type: String },
         password: { type: String },
         displayName: { type: String },
+        fullname: { type: String },
+        first_name: { type: String },
+        last_name: { type: String },
+        followings_count: { type: Number, default: 0 },
+        followers_count: { type: Number, default: 0 },
+        likes_count: { type: Number, default: 0 },
         bio: { type: String },
+        tick: { type: Boolean },
         avatar: { type: String },// URL to user's profile picture
         coverImage: { type: String },
         followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],// Array of user IDs for users who follow this user
@@ -47,4 +54,4 @@ const UserSchema = new Schema(
 //     overrideMethods: 'all',
 // });
 
-module.exports = mongoose.model('user', UserSchema);
+module.exports = mongoose.model('User', UserSchema);
