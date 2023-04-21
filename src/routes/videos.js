@@ -10,8 +10,7 @@ router.get('/show', videoController.showVideo);
 router.get('/:id', videoController.getVideo);
 // /videos?type=for-you&page=1
 router.post('/', videoController.uploadVideo);
-router.get('/', videoController.getVideoList, videoController.chongTreo);
-// router.get('/', videoController.getVideoList);
+router.get('/', videoController.getVideoList, videoController.chongTreo); 
 
 // [Auth]
 // /videos/12?_method=PATCH
