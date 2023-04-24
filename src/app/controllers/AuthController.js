@@ -68,26 +68,26 @@ class AuthController {
                 const dataForAccessToken = {
                   id: user._id,
                 };
-                const accessToken =  authMethod.generateToken(
+                authMethod.generateToken(
                   dataForAccessToken,
                   accessTokenSecret,
                   accessTokenLife,
-                );
-                console.log('accessToken: ',accessToken);
-                if (!accessToken) {
-                  return res
-                    .status(401)
-                    .send('Đăng nhập không thành công, vui lòng thử lại.');
-                }
-                return res.json({
-                  msg: 'Đăng nhập thành công.',
-                  data: user,
-                  meta: {
-                    token: accessToken
-                  }, 
-                });
-
-
+                ).then((accessToken) => {
+                  // console.log('dataForAccessToken: ' + JSON.stringify(dataForAccessToken));
+                  // console.log('accessToken: ',accessToken);
+                  if (!accessToken) {
+                    return res
+                      .status(401)
+                      .send('Đăng nhập không thành công, vui lòng thử lại.');
+                  }
+                  return res.json({
+                    msg: 'Đăng nhập thành công.',
+                    data: user,
+                    meta: {
+                      token: accessToken
+                    }, 
+                  });
+                }); 
               })
               .catch(error => {
                 console.error(error);
