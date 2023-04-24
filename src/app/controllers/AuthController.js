@@ -1,39 +1,100 @@
 const Users = require('./../models/User'); 
 const { mongooseToObject } = require('../../util/monggoose');
-const { response } = require('express'); 
+const { response, request } = require('express');  
+const randToken = require('rand-token');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const jwtVariable = require('../../variables/jwt');
+const {SALT_ROUNDS} = require('../../variables/auth');
+const authMethod = require('./auth.methods');
+
 class AuthController {
     //[POST] /auth/register
     register(req, res, next) {
       const { email, nickname, password, type } = req.body; 
-      const newUser = new Users(req.body);
+      // const newUser = new Users(req.body);
       // Check if user with given email already exists
       Users.findOne({ email })
-      .then(existingUser => {
-        if (existingUser) {
-          return res.status(409).json({ message: 'Email is already in use' });
-        }   
-      })
-      .then(() => { 
-        newUser.save()
-        res.json(newUser)
-      }) 
-      .catch(error => {
-        console.error(error);
-        res.status(500).json({ message: 'Server Error' });
-      });
+        .then(existingUser => {
+          if (existingUser) {
+            return res.status(409).json({ message: 'Email is already in use' });
+          }   
+        })
+        .then(() => { 
+          const hashPassword = bcrypt.hashSync(password, SALT_ROUNDS);
+          const newUser = new Users({
+            email: email,
+            nickname: req.body.nickname,
+            password: hashPassword,
+          });
+          newUser.save();
+          res.json(newUser);
+        }) 
+        .catch(error => {
+          console.error(error);
+          res.status(500).json({ message: 'Server Error' });
+        });
     }
      
      
 
 
     //[POST] /auth/login
+    // login(req, res, next){ 
+    //     Users.findOne({ email: req.body.email, password: req.body.password })
+    //         .then(user => res.json(user))
+    //         .catch(next);
+    // }
     login(req, res, next){ 
-        Users.findOne({ email: req.body.email, password: req.body.password })
-            .then(user => res.json(user))
-            .catch(next);
-    }
+      const email = req.body.email;
+      const password = req.body.password;
+          Users.findOne({ email: email})
+              // .then(user => res.json(user))
+            
+              .then((user) =>{
+                if(email !== user.email){
+                  return res.status(409).json({ message: 'Account does not exist' });
+                }
+                // console.log(user);
+                const isPasswordValid = bcrypt.compareSync(req.body.password, user.password);
+                if (!isPasswordValid) {
+                  return res.status(401).send('Incorrect password');
+                }
+                const accessTokenLife =
+		                    process.env.ACCESS_TOKEN_LIFE || jwtVariable.accessTokenLife;
+
+                const accessTokenSecret =
+                        process.env.ACCESS_TOKEN_SECRET || jwtVariable.accessTokenSecret;
+
+                const dataForAccessToken = {
+                  id: user._id,
+                };
+                const accessToken =  authMethod.generateToken(
+                  dataForAccessToken,
+                  accessTokenSecret,
+                  accessTokenLife,
+                );
+                console.log('accessToken: ',accessToken);
+                if (!accessToken) {
+                  return res
+                    .status(401)
+                    .send('Đăng nhập không thành công, vui lòng thử lại.');
+                }
+                return res.json({
+                  msg: 'Đăng nhập thành công.',
+                  data: user,
+                  meta: {
+                    token: accessToken
+                  }, 
+                });
+
+
+              })
+              .catch(error => {
+                console.error(error);
+                res.status(500).json({ message: 'Server Error' });
+              });
+          
+      }
  
       
         

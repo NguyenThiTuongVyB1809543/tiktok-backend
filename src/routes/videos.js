@@ -19,8 +19,8 @@ router.get('/', videoController.getVideoList, videoController.chongTreo);
 // [Auth]
 // router.delete('/10', videoController.deleteVideo);
 
-// [Auth]
-// router.post('/1/like', videoController.likeVideo);
+// [Auth]/videos/:id/like
+// router.post('/:id/like', videoController.likeVideo);
 
 // [Auth]
 // router.post('/1/unlike', videoController.unlikeVideo);

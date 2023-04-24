@@ -1,6 +1,5 @@
 const videoRouter = require('./videos');
-const userRouter = require('./users');
-const nothingRouter = require('./nothing');
+const userRouter = require('./users'); 
 // const commentRouter = require('./comments');
 const authRouter = require('./auth');
 // const meRouter = require('./me');
@@ -9,8 +8,7 @@ function route(app) {
     app.use('/users', userRouter);  
     // app.use('/comments', commentRouter);
     app.use('/auth', authRouter);  
-    // app.use('/me', meRouter);
-    app.use('/', nothingRouter);
+    // app.use('/me', meRouter); 
 }
 
 module.exports = route;

@@ -7,7 +7,7 @@ const userController = require('../app/controllers/UserController');
 
 
 // /users/search?q=f&type=less
-// router.get('/search', userController.searchUser);
+router.get('/search', userController.searchUser);
 
 // [Auth]
 // router.get('/1/like-videos', userController.getVideoLikeByUser);
@@ -15,7 +15,7 @@ const userController = require('../app/controllers/UserController');
 // router.get('/1/videos', userController.getVideoOfUser);
 
 // /users/suggested?page=1&per_page=12
-router.get('/suggested', userController.getSuggestedUserList, userController.chongTreo );
+// router.get('/suggested', userController.getSuggestedUserList, userController.chongTreo );
 router.get('/suggested', userController.getSuggestedUserList  );
 
 // /users/@sondnf8

@@ -23,7 +23,6 @@ class VideoController {
     //       console.log('error: ', err);
     //     });
     // }
-
     getVideoList(req, res, next) {
         if(['for-you'].includes(req.query.type )){
             if(['1', '2', '3', '4', '5'].includes(req.query.page )){  
@@ -71,6 +70,13 @@ class VideoController {
             }) 
             .catch(next);
     }
+
+    //like video
+    //[POST] /videos/:id/like 
+    // likeVideo(req, res, next) {
+    //     Video
+    // }
+
 
 
 

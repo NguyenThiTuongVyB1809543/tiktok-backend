@@ -7,10 +7,12 @@ const db = require('./config/db');
 const app = express();
 const port = 8000;
 const methodOverride = require('method-override');
-const cors = require('cors')
+const cors = require('cors');
+const bodyParser= require('body-parser');
+const multer = require('multer');
 // require('dotenv').config()
 
-
+app.use(bodyParser.urlencoded({extended: true}))
 app.use(cors())  
 app.use(methodOverride('_method'));
 //Connect to DB
@@ -41,6 +43,9 @@ app.set('views', path.join(__dirname, 'resources', 'views'));
 route(app);
 
 
+
+
+
 app.get('/middleware', 
     function(req, res, next) {
         if(['vethuong', 'vevip'].includes(req.query.ve)){
@@ -59,6 +64,36 @@ app.get('/middleware',
         next();
     }
 );
+
+
+
+// app.get('/home', function(req, res) {
+//     res.json({ message: 'WELCOME' });   
+// });
+// app.get('/', (req, res) => {
+//         res.render('home');//render home thì nó lấy home.handlebars nó đưa vào {{{body}}} ở trang D:\nodejs\blog\src\resources\views\layouts\main.handlebars
+// })
+ 
+// var storage = multer.diskStorage({
+//     destination: function (req, file, cb) {
+//       cb(null, 'public')
+//     },
+//     filename: function (req, file, cb) {
+//       cb(null, file.fieldname + '-' + Date.now())
+//     }
+//   })
+   
+//   var upload = multer({ storage: storage })
+
+//   app.post('/uploadfile', upload.single('myFile'), (req, res, next) => {
+//     const file = req.file
+//     if (!file) {
+//       const error = new Error('Please upload a file')
+//       error.httpStatusCode = 400
+//       return next(error)
+//     }
+//     res.send(file)
+//   })
 
 
 
