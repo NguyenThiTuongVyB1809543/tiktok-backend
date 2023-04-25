@@ -60,9 +60,14 @@ class VideoController {
 
     //upload video
     //[POST] /videos   
-    uploadVideo(req, res, next) { 
-        const  FormData = req.body;
-        res.json(req.body);
+    uploadVideo(req, res, next) {
+        console.log('req:', req) ;
+
+        // const  FormData = req.body;
+        // res.json(req);
+        // for (const value of FormData.values()) {
+        //     console.log('value form data: ',value);
+        //   }
         // const video = new Videos(req.body); 
         // video.save()
         //     .then(() => {  

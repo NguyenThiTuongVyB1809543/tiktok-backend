@@ -10,9 +10,11 @@ const methodOverride = require('method-override');
 const cors = require('cors');
 const bodyParser= require('body-parser');
 const multer = require('multer');
-// require('dotenv').config()
-
+// var upload = multer();
+// require('dotenv').config() 
 app.use(bodyParser.urlencoded({extended: true}))
+// app.use(upload.array()); 
+
 app.use(cors())  
 app.use(methodOverride('_method'));
 //Connect to DB
