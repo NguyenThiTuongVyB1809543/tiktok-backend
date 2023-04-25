@@ -6,9 +6,9 @@ const verify = promisify(jwt.verify).bind(jwt);
 
 exports.generateToken = async (payload, secretSignature, tokenLife) => {
 	try {
-		console.log('Payload: ' + payload);
-		console.log('Secret signature: ' + secretSignature);
-		console.log('TokenLife: ' + tokenLife);
+		// console.log('Payload: ' + payload);
+		// console.log('Secret signature: ' + secretSignature);
+		// console.log('TokenLife: ' + tokenLife);
 		return await sign(
 			{
 				payload,

@@ -55,7 +55,7 @@ class AuthController {
                   return res.status(409).json({ message: 'Account does not exist' });
                 }
                 // console.log(user);
-                const isPasswordValid = bcrypt.compareSync(req.body.password, user.password);
+                const isPasswordValid = bcrypt.compareSync(password, user.password);
                 if (!isPasswordValid) {
                   return res.status(401).send('Incorrect password');
                 }
@@ -66,7 +66,7 @@ class AuthController {
                         process.env.ACCESS_TOKEN_SECRET || jwtVariable.accessTokenSecret;
 
                 const dataForAccessToken = {
-                  id: user._id,
+                  _id: user._id,
                 };
                 authMethod.generateToken(
                   dataForAccessToken,
@@ -106,8 +106,40 @@ class AuthController {
     }
 
     //[GET] /auth/me
-     
+    getCurrentUser(req, res, next){
 
+    }
+
+
+    // [Auth] auth/me/followings?page=1'    Get followings list
+    getFollowingList(req, res, next){
+      
+      const page = req.query.page || 1;
+      const perPage = 5; 
+      console.log('page: ', page);
+      // Users.find({ follower: userId })
+      //   .skip((page - 1) * perPage)
+      //   .limit(perPage)
+      //   .populate('following', '_id username avatar')
+      //   .then(followings => {
+      //     const response = {
+      //       followings: followings.map(following => {
+      //         return {
+      //           id: following.following._id,
+      //           username: following.following.username,
+      //           avatar: following.following.avatar
+      //         };
+      //       }),
+      //       currentPage: page,
+      //       totalPages: Math.ceil(followings.length / perPage)
+      //     };
+      //     res.status(200).json(response);
+      //   })
+      //   .catch(err => {
+      //     console.error(err);
+      //     res.status(500).json({ error: err });
+      //   });
+    }
      
     //[GET] /auth/
     index(req, res, next) {

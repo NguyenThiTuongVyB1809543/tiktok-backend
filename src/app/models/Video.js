@@ -10,7 +10,7 @@ const VideoSchema = new Schema(
         thumb_url: { type: String },// URL to the video thumbnail
         description: { type: String },
         music: { type: String },
-        is_liked: { type: Boolean},
+        is_liked: { type: Boolean, default: false },
         comments_count: { type: Number, default: 0 },
         likes_count: { type: Number, default: 0 },
         shares_count: { type: Number, default: 0 },

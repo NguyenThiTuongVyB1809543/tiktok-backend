@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 
 const authController = require('../app/controllers/AuthController');
 const User = require('../app/models/User');
+const authMiddleware = require('../app/controllers/auth.middlewares');
 
 
 router.post('/register', authController.register); 
@@ -15,8 +16,10 @@ router.post('/logout', authController.logout);
 // /auth/me?_method=PATCH
 // router.post('/me', authController.updateCurrentUser);
 
-// [Auth]
-// router.get('/me', authController.getCurrentUser);
+// [Auth] Get followings list
+router.get('/me/followings',authMiddleware.isAuth, authController.getFollowingList);
+
+router.get('/me ', authController.getCurrentUser);
 
 router.get('/', authController.index);
 

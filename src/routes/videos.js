@@ -3,13 +3,14 @@ const express = require('express');
 const router = express.Router();
 const videoController = require('../app/controllers/VideoController');
 
-
+const authMiddleware = require('../app/controllers/auth.middlewares');
 
 
 router.get('/show', videoController.showVideo);
 router.get('/:id', videoController.getVideo);
+// [Auth]
+router.post('/', authMiddleware.isAuth, videoController.uploadVideo);
 // /videos?type=for-you&page=1
-router.post('/', videoController.uploadVideo);
 router.get('/', videoController.getVideoList, videoController.chongTreo); 
 
 // [Auth]

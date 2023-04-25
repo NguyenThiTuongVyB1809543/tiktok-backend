@@ -61,15 +61,16 @@ class VideoController {
     //upload video
     //[POST] /videos   
     uploadVideo(req, res, next) { 
-        const {file_url, thumb_url, description, music, user} = req.body;
-        const video = Videos(req.body);
-        
-        video.save()
-            .then(() => {  
-                res.json(video)
-            }) 
-            .catch(next);
+        const  FormData = req.body;
+        res.json(req.body);
+        // const video = new Videos(req.body); 
+        // video.save()
+        //     .then(() => {  
+        //         res.json(video)
+        //     }) 
+        //     .catch(next);
     }
+    
 
     //like video
     //[POST] /videos/:id/like 
