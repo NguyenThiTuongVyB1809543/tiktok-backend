@@ -42,8 +42,9 @@ exports.isAuth = async (req, res, next) => {
 			return null;
 		}
 	};
+	const idUser = verified.payload._id;
 	const user = await getUser(verified.payload._id);
-	req.user = user;
-	console.log('verified: ', user);
+	// req.user = user;
+	console.log('verified: ', idUser);
 	return next();
 };

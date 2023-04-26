@@ -4,6 +4,8 @@ const { mongooseToObject } = require('../../util/monggoose');
 const { response } = require('express');
 const multer = require('multer');
 const path = require('path');
+const authMethod = require('./auth.methods');
+const jwtVariable = require('../../variables/jwt');
 
 class VideoController {
     //[GET] /videos/show
@@ -60,20 +62,19 @@ class VideoController {
 
     //upload video
     //[POST] /videos   
-    uploadVideo(req, res, next) {
-        console.log('req:', req) ;
+    uploadVideo(req, res, next) {   
+        const  FormData = req.body;
+        // console.log(FormData);
+        const newVideo = new Videos({
+            description: req.body.description,
+            music: req.body.music,
+            file_url: "http://localhost:3000/src/assets/video/" + req.body.namefile,
+            // user: req.body.id
 
-        // const  FormData = req.body;
-        // res.json(req);
-        // for (const value of FormData.values()) {
-        //     console.log('value form data: ',value);
-        //   }
-        // const video = new Videos(req.body); 
-        // video.save()
-        //     .then(() => {  
-        //         res.json(video)
-        //     }) 
-        //     .catch(next);
+        })
+        console.log('newVideo: ',newVideo);
+        // newVideo.save();
+       
     }
     
 
