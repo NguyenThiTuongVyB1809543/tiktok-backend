@@ -69,11 +69,20 @@ class VideoController {
             description: req.body.description,
             music: req.body.music,
             file_url: "http://localhost:3000/src/assets/video/" + req.body.namefile,
-            // user: req.body.id
+            user: req.body.userId
 
         })
-        console.log('newVideo: ',newVideo);
-        // newVideo.save();
+        // console.log('newVideo: ',newVideo);
+        newVideo.save()
+        .then((video) =>{
+            Users.findOneAndUpdate(req.body.userId, {$push: { videos: video._id }})
+                .then((user) =>{
+                    res.json(video);
+                })
+                .catch(next);
+        })
+        .catch(next)
+
        
     }
     
