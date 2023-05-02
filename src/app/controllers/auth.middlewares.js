@@ -42,9 +42,8 @@ exports.isAuth = async (req, res, next) => {
 			return null;
 		}
 	};
-	const idUser = verified.payload._id;
-	const user = await getUser(verified.payload._id);
-	// req.user = user;
-	console.log('verified: ', idUser);
+	const idUser = verified.payload._id;  
+	res.locals.idUser = idUser; 
+	// console.log('res.locals.idUser: ', res.locals.idUser);
 	return next();
 };

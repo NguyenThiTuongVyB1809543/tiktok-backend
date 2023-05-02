@@ -13,13 +13,14 @@ router.post('/login', authController.login);
 router.post('/logout', authController.logout);
 
 // [Auth]
-// /auth/me?_method=PATCH
-// router.post('/me', authController.updateCurrentUser);
-
+// /auth/update
+// router.post('/update',authMiddleware.isAuth, authController.updateCurrentUser);
+router.post('/update',  authController.updateCurrentUser);
+ 
 // [Auth] Get followings list
-router.get('/me/followings',authMiddleware.isAuth, authController.getFollowingList);
+// router.get('/me/followings',authMiddleware.isAuth, authController.getFollowingList);
 
-router.get('/me ', authController.getCurrentUser);
+// router.get('/me ',authMiddleware.isAuth, authController.getCurrentUser);
 
 router.get('/', authController.index);
 

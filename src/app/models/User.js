@@ -31,9 +31,10 @@ const UserSchema = new Schema(
         followings_count: { type: Number, default: 0 },
         followers_count: { type: Number, default: 0 },
         likes_count: { type: Number, default: 0 },
+        is_followed: { type: Boolean, default: false},
         bio: { type: String },
         tick: { type: Boolean },
-        avatar: { type: String },// URL to user's profile picture
+        avatar: { type: String, default: "/src/assets/images/Avatar.jpeg" },// URL to user's profile picture
         coverImage: { type: String },
         followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],// Array of user IDs for users who follow this user
         following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],// Array of user IDs for users this user follows

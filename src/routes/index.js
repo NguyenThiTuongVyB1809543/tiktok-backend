@@ -1,10 +1,10 @@
-const videoRouter = require('./videos');
+const videoRouter = require('./videos'); 
 const userRouter = require('./users'); 
 // const commentRouter = require('./comments');
 const authRouter = require('./auth');
-// const meRouter = require('./me');
+const meRouter = require('./me');
 function route(app) { 
-    app.use('/videos', videoRouter);  
+    app.use('/videos', videoRouter);    
     app.use('/users', userRouter);  
     // app.use('/comments', commentRouter);
     app.use('/auth', authRouter);  

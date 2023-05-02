@@ -18,16 +18,7 @@ class UserController {
         const limit = parseInt(per_page);
 
         Users.find().skip(skip).limit(limit)
-            .then(users => res.json(users));
- 
-        // if(['1', '12'].includes(req.query.page )){
-        //     if(['5','10', '15', '20'].includes(req.query.per_page )){  
-        //         return next();
-        //     } 
-        // }
-        // res.status(403).json({
-        //     message: 'Access denied, khum cho vao'
-        // })
+            .then(users => res.json(users)); 
     }
     chongTreo(req, res, next) { //1 middleware nên có next() hoặc phải có res.send() nếu không sẽ bị treo 
         Users.find({})
@@ -36,13 +27,7 @@ class UserController {
                 ))
             .catch(next);
     } 
-
-    //[GET] /users/suggested
-    // getSuggestedUserList(req, res, next) {
-    //     Users.find({})
-    //         .then(user => res.json(user))
-    //         .catch(next);
-    // }
+ 
 
     //[GET] /users/@:nickname
     // getAnUser = async (req, res) => {
@@ -60,11 +45,30 @@ class UserController {
     //     res.status(200).json(user);
     // };  
     getAnUser (req, res, next) { 
-        Users.findOne({nickname: req.params.nickname}). populate('videos').exec()
-            .then(user => res.json(user))
-            .catch(err => {
-                console.log('error: ', err);
-            });
+        const idMe = res.locals.idUser;
+        let userMeFollowing  = [];
+        Users.findById({_id: idMe})
+            .then((user) => {
+                userMeFollowing = user.following;
+                // console.log(userMeFollowing);
+            })
+            .then(() => {
+                return Users.findOne({nickname: req.params.nickname}).populate('videos').exec()
+            })
+            
+            .then(users => {
+                if(userMeFollowing.includes(users._id.toString())){
+                    users.is_followed = true;
+                }
+                res.json(users);
+            })
+            .catch(next);
+ 
+        // Users.findOne({nickname: req.params.nickname}).populate('videos').exec()
+        //     .then(user => res.json(user))
+        //     .catch(err => {
+        //         console.log('error: ', err);
+        //     });
 
     }
 
@@ -104,27 +108,122 @@ class UserController {
                 }) 
                 .catch(err => console.error('err searchUsersOnHeader: ',err));
           } 
-        //   else if (searchType === 'more') {
-        //     // perform search on search page, paginate results
-        //     const page = parseInt(req.query.page) || 1;
-        //     const resultsPerPage = 10;
-        //     const startIndex = (page - 1) * resultsPerPage;
-        //     const endIndex = page * resultsPerPage;
-        //     const allResults =   searchUsersOnSearchPage(searchQuery);
-        //     results = allResults.slice(startIndex, endIndex);
-        //   } else {
-        //     return res.status(400).json({ message: 'Invalid search type' });
-        //   }
-        //   return res.json(results);
+        
     }
-      
-      
-      
-      
-      
-      
 
+    // [Auth]
+    // /users/:id/follow
+    followAUser(req, res, next) { 
+        const idOtherPeople = req.params.id; 
+        const idMe = res.locals.idUser;
+        // let is_followed = false;
+      
+        Users.findById( {_id: idMe} )
+            .then((me) => {
+                // console.log('me nè: ',me);
+                if (!me) {
+                    res.status(404).json({ message: 'User not found' });
+                }
+                
+                if (me.following.includes(idOtherPeople)) {
+                    res.status(400).json({ message: 'You are already following this user' });
+                }
 
+                me.following.push(idOtherPeople);
+                me.followings_count++;
+                // console.log('Mình nè: ',me);
+                return me.save(); 
+            })
+            .then(() => {
+                return Users.findById({_id: idOtherPeople});
+              })
+            .then((otherPeople) => {
+                // console.log('otherPeople nè: ',otherPeople);
+
+                if (!otherPeople) {
+                    res.status(404).json({ message: 'User not found' });
+                }
+                 
+                if (otherPeople.followers.includes(idMe)) {
+                    res.status(400).json({ message: 'You are follower of this user' });
+                }
+                otherPeople.followers.push(idMe);
+                otherPeople.followers_count++;
+                // is_followed = true;
+                // console.log('người ta nè: ',otherPeople);
+                return otherPeople.save(); 
+            })
+            .then((user) => { 
+                if (!user) {
+                    return res.status(404).json({ message: 'User not found' });
+                }
+                user.is_followed = true; 
+                res.json(user); 
+            })
+            .catch(next);
+ 
+        
+    }
+
+    // [Auth]
+    // /users/:id/unfollow
+    unFollowAUser(req, res, next) {
+        const idUnfollow = req.params.id; 
+        // console.log('idOtherPeople: ', idUnfollow);
+        const idMe = res.locals.idUser;
+        // console.log('idMe: ', idMe);
+         
+        Users.findById( {_id: idMe} )
+            .then((me) => {
+                // console.log('me nè: ',me);
+                if (!me) {
+                    res.status(404).json({ message: 'User not found' });
+                }
+                
+                if (!me.following.includes(idUnfollow)) {
+                    res.status(400).json({ message: 'You are not following this user' });
+                }
+
+                me.following.pull(idUnfollow);
+                me.followings_count--;
+                // console.log('Mình nè: ',me);
+                return me.save(); 
+            })
+            .then(() => {
+                return Users.findById({_id: idUnfollow});
+              })
+            .then((otherPeople) => {
+                // console.log('otherPeople nè: ',otherPeople);
+
+                if (!otherPeople) {
+                    res.status(404).json({ message: 'User not found' });
+                }
+                 
+                if (!otherPeople.followers.includes(idMe)) {
+                    res.status(400).json({ message: 'You are not follower of this user' });
+                }
+                otherPeople.followers.pull(idMe);
+                otherPeople.followers_count--;
+                
+                // console.log('người ta nè: ',otherPeople);
+                return otherPeople.save(); 
+            })
+            .then((user) => { 
+                if (!user) {
+                    return res.status(404).json({ message: 'User not found' });
+                }
+                user.is_followed = false;
+                res.json(user); 
+            })
+            .catch(next);
+            
+             
+        
+         
+    }
+
+      
+       
 
 }
 

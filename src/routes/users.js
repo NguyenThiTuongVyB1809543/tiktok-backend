@@ -2,12 +2,21 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../app/controllers/UserController');
-
+const authMiddleware = require('../app/controllers/auth.middlewares');
 
 
 
 // /users/search?q=f&type=less
 router.get('/search', userController.searchUser);
+
+
+// [Auth]
+// /users/:id/follow
+router.post('/:id/follow',authMiddleware.isAuth, userController.followAUser);
+// [Auth]
+// /users/:id/unfollow
+router.post('/:id/unfollow',authMiddleware.isAuth, userController.unFollowAUser);
+
 
 // [Auth]
 // router.get('/1/like-videos', userController.getVideoLikeByUser);
@@ -19,7 +28,7 @@ router.get('/search', userController.searchUser);
 router.get('/suggested', userController.getSuggestedUserList  );
 
 // /users/@sondnf8
-router.get('/@:nickname', userController.getAnUser);
+router.get('/@:nickname',authMiddleware.isAuth, userController.getAnUser);
 
 router.get('/show', userController.showUser);
 

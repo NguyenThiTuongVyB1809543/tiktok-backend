@@ -5,8 +5,7 @@ const randToken = require('rand-token');
 const bcrypt = require('bcrypt');
 const jwtVariable = require('../../variables/jwt');
 const {SALT_ROUNDS} = require('../../variables/auth');
-const authMethod = require('./auth.methods');
-
+const authMethod = require('./auth.methods'); 
 class AuthController {
     //[POST] /auth/register
     register(req, res, next) {
@@ -97,10 +96,7 @@ class AuthController {
               });
           
       }
- 
-      
-        
-
+  
     //[POST] /auth/logout
     logout(req, res, next){
         res.send("logout success");
@@ -108,41 +104,60 @@ class AuthController {
     }
 
     //[GET] /auth/me
-    getCurrentUser(req, res, next){
+    // getCurrentUser(req, res, next){
 
-    }
+    // }
 
 
-    // [Auth] auth/me/followings?page=1'    Get followings list
-    getFollowingList(req, res, next){
+    // // [Auth] auth/me/followings?page=1'    Get followings list
+    // getFollowingList(req, res, next){
       
-      const page = req.query.page || 1;
-      const perPage = 5; 
-      console.log('page: ', page);
-      // Users.find({ follower: userId })
-      //   .skip((page - 1) * perPage)
-      //   .limit(perPage)
-      //   .populate('following', '_id username avatar')
-      //   .then(followings => {
-      //     const response = {
-      //       followings: followings.map(following => {
-      //         return {
-      //           id: following.following._id,
-      //           username: following.following.username,
-      //           avatar: following.following.avatar
-      //         };
-      //       }),
-      //       currentPage: page,
-      //       totalPages: Math.ceil(followings.length / perPage)
-      //     };
-      //     res.status(200).json(response);
-      //   })
-      //   .catch(err => {
-      //     console.error(err);
-      //     res.status(500).json({ error: err });
-      //   });
-    }
+    //   const page = req.query.page || 1;
+    //   const perPage = 5; 
+    //   console.log('page: ', page);
+    //   // Users.find({ follower: userId })
+    //   //   .skip((page - 1) * perPage)
+    //   //   .limit(perPage)
+    //   //   .populate('following', '_id username avatar')
+    //   //   .then(followings => {
+    //   //     const response = {
+    //   //       followings: followings.map(following => {
+    //   //         return {
+    //   //           id: following.following._id,
+    //   //           username: following.following.username,
+    //   //           avatar: following.following.avatar
+    //   //         };
+    //   //       }),
+    //   //       currentPage: page,
+    //   //       totalPages: Math.ceil(followings.length / perPage)
+    //   //     };
+    //   //     res.status(200).json(response);
+    //   //   })
+    //   //   .catch(err => {
+    //   //     console.error(err);
+    //   //     res.status(500).json({ error: err });
+    //   //   });
+    // }
      
+    // [Auth]
+    // /auth/update
+    updateCurrentUser(req, res, next) {
+      // res.json(req.body);
+      const fullname = req.body.fullname; 
+      const bio = req.body.bio;
+      const avatar = "/src/assets/images/" + req.body.avatar;
+      const userId = req.body.userId;
+       
+      Users.findOneAndUpdate({_id: userId}, {$set: {fullname: fullname, bio: bio, avatar: avatar,  }}, { new: true })
+        .then((user) => {
+          res.json(user);
+        })
+        .catch(next);
+
+
+    }
+
+ 
     //[GET] /auth/
     index(req, res, next) {
         res.send('Auth Controller');
