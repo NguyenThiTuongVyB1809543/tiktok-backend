@@ -39,13 +39,23 @@ class AuthController {
       .catch(next);
   }
 
-  // [Auth] /me/followings?page=1'    Get followings list
+  // [Auth] /me/followings?page=1' Get followings list
   getFollowingList(req, res, next){ 
-    const page = req.query.page || 1;
-    const perPage = 5; 
-    console.log('page: ', page);
-     
-  }
+    const idMe = res.locals.idUser;
+    let userMeFollowing  = [];
+    const page = parseInt(req.query.page) || 1 || 2 || 3 || 4 || 5 || 6 || 7 || 8 || 9;
+    Users.findById({ _id: idMe })
+      .then((user) => {
+          userMeFollowing = user.following; 
+      })
+      .then(() => {
+          const userIDs = userMeFollowing.map((id) => id.toString());
+          return Users.find({ _id: { $in: userIDs } }) 
+      }) 
+      .then(users => res.json(users)) 
+      .catch(next);
+  } 
+   
      
 
 }

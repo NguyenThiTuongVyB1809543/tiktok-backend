@@ -9,18 +9,21 @@ router.get('/show', videoController.showVideo);
 router.get('/:id', videoController.getVideo);
 // [Auth]
 router.post('/', authMiddleware.isAuth, videoController.uploadVideo);
-// /videos/unlogin?type=for-you&page=1
-// router.get('/unlogin', videoController.getVideoList ); 
-// router.get('/', videoController.getVideoList, videoController.chongTreo); 
-// /videos?type=for-you1&page=1
-router.get('/', authMiddleware.isAuth, videoController.getVideoListAuth, videoController.chongTreoAuth); 
+ 
+// /videos?type=for-you&page=1
+// router.get('/', authMiddleware.isAuth, videoController.getVideoListAuth, videoController.chongTreoAuth); 
+router.get('/', authMiddleware.isAuth, videoController.getVideoListAuth, videoController.chongTreoAuth ); 
+
+ 
 
 // [Auth]
 // /videos/12?_method=PATCH
 // router.post('/12', videoController.updateVideo);
 
-// [Auth]
-// router.delete('/10', videoController.deleteVideo);
+// [Auth] /:id
+router.delete('/:id',authMiddleware.isAuth, videoController.deleteVideo);
+// router.post('/:id', videoController.deleteVideo);
+
 
 // [Auth]/videos/:id/like
 router.post('/:id/like',authMiddleware.isAuth,  videoController.likeVideo);
@@ -33,7 +36,8 @@ router.post('/:id/unlike', authMiddleware.isAuth, videoController.unlikeVideo);
 // /videos/49df7460-faaa-4739-9f02-ec6f80b5458d/comments
 router.post('/:id/comments', authMiddleware.isAuth, videoController.createCommentVideo);
 
-// [Auth] /videos/:id/comments
+// /videos/:id/comments
+// router.get('/:id/comments',  videoController.getCommentsListVideo);
 router.get('/:id/comments', authMiddleware.isAuth, videoController.getCommentsListVideo);
 
 // [Auth]

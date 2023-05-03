@@ -5,9 +5,11 @@ var mongooseDelete = require('mongoose-delete');
 
 const CommentSchema = new Schema(
     { 
-        content: { type: String, required: true },
-        user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },// ID of the user who made the comment
-        video: { type: mongoose.Schema.Types.ObjectId, ref: 'Video', required: true },// ID of the video the comment was made on
+        comment: { type: String },
+        is_liked: { type: Boolean, default: false },
+        likes_count: { type: Number, default: 0 },
+        user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },// ID of the user who made the comment
+        video: { type: mongoose.Schema.Types.ObjectId, ref: 'Video' },// ID of the video the comment was made on
         likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],// Array of user IDs for users who liked this comment
         createdAt: { type: Date, default: Date.now }
     },
@@ -23,4 +25,4 @@ const CommentSchema = new Schema(
 //     overrideMethods: 'all',
 // });
 
-module.exports = mongoose.model('comment', CommentSchema);
+module.exports = mongoose.model('Comment', CommentSchema);

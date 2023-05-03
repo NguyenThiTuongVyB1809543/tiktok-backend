@@ -40,6 +40,7 @@ const UserSchema = new Schema(
         following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],// Array of user IDs for users this user follows
         videos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Video' }],
         likedVideos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Video' }],
+        likedComments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
         notifications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notification' }],
         createdAt: { type: Date, default: Date.now }
     },

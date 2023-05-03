@@ -62,13 +62,7 @@ class UserController {
                 }
                 res.json(users);
             })
-            .catch(next);
- 
-        // Users.findOne({nickname: req.params.nickname}).populate('videos').exec()
-        //     .then(user => res.json(user))
-        //     .catch(err => {
-        //         console.log('error: ', err);
-        //     });
+            .catch(next); 
 
     }
 

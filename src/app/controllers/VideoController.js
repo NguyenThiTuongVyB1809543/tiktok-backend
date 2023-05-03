@@ -1,11 +1,13 @@
 const Videos = require('./../models/Video');
 const Users = require('./../models/User');
+const Comments = require('./../models/Comment');
 const { mongooseToObject } = require('../../util/monggoose');
 const { response } = require('express');
 const multer = require('multer');
 const path = require('path');
 const authMethod = require('./auth.methods');
 const jwtVariable = require('../../variables/jwt');
+const Video = require('./../models/Video');
 
 class VideoController {
     //[GET] /videos/show
@@ -22,30 +24,34 @@ class VideoController {
 
     //[GET] /videos?type=for-you&page=1  
     getVideoListAuth(req, res, next) {
-        if(['for-you'].includes(req.query.type )){
-            if(['1', '2', '3', '4', '5'].includes(req.query.page )){  
+        const type = req.query.type;
+        if(['for-you', 'following'].includes(req.query.type )){
+            if(['1', '2', '3', '4', '5'].includes(req.query.page )){
+                res.locals.type = type;  
                 return next();
-            } 
-            return next();
+            }  
         }
+        
         res.status(403).json({
-            message: 'Access denied, khum cho vao'
+            message: 'Access denied, khum cho vao getVideoListAuth'
         })
     }
     chongTreoAuth(req, res, next) { //1 middleware nên có next() hoặc phải có res.send() nếu không sẽ bị treo 
         const idMe = res.locals.idUser;
-        // console.log(idMe);
+        const type = res.locals.type;
+        // console.log('res.locals: ', res.locals);
         let userMeFollowing  = [];
         let videoMeLike  = [];
-        if(idMe != undefined){ 
+        if(type === 'for-you'){ 
             Users.findById({ _id: idMe })
                 .then((user) => {
                     userMeFollowing = user.following;
                     videoMeLike = user.likedVideos;
-                    // console.log('videoMeLike: ', videoMeLike);
+                     
                 })
                 .then(() => {
-                    return Videos.find().populate('user').sort({createdAt: 'desc'}).exec()
+                    return Videos.find()
+                                .populate('user').sort({createdAt: 'desc'}).exec()
                 })
                 .then(videos => {
                     videos.forEach((video) => {
@@ -63,21 +69,35 @@ class VideoController {
                 })
                 .catch(next);
         }
-        else{
-
-            Videos.find().populate('user').sort({createdAt: 'desc'}).exec()
-                .then(videos => {
-                    res.json(videos)
+        else{ 
+            Users.findById({ _id: idMe })
+                .then((user) => {
+                    userMeFollowing = user.following;
+                    videoMeLike = user.likedVideos;
+                     
                 })
-                .catch(err => {
-                console.log('error: ', err);
-                });
+                .then(() => {
+                    const userIDs = userMeFollowing.map((id) => id.toString());
+                    return Videos.find({ user: { $in: userIDs } }).populate('user').sort({createdAt: 'desc'}).exec()
+                })
+                .then(videos => {
+                    videos.forEach((video) => {
+                        // console.log('video user: ', video.user._id);
+                        if(userMeFollowing.includes(video.user._id.toString())){
+                            video.user.is_followed = true;
+                        }  
+                    }) 
+                    videos.forEach((video) => { 
+                        if(videoMeLike.includes(video._id.toString())){
+                            video.is_liked = true;
+                        }   
+                    })
+                    res.json(videos);
+                })
+                .catch(next);
         } 
-    } 
-
-    
-    
-
+    }  
+      
     //[GET] /videos/:id
     getVideo(req, res, next) {
         Videos.findById({ _id:req.params.id })
@@ -103,15 +123,9 @@ class VideoController {
             .then((user) =>{
                 res.json(user);
             })
-            .catch(next);
-        
-      
-
-       
+            .catch(next);  
     }
-    
-
-    
+     
     // [Auth]
     //[POST] /videos/:id/like
     likeVideo(req, res, next) {
@@ -153,7 +167,7 @@ class VideoController {
             })
             .then((videos) => { 
                 if (!videos) {
-                    return res.status(404).json({ message: 'User not found' });
+                    return res.status(404).json({ message: 'Video not found' });
                 }
                 videos.is_liked = true; 
                 // videos.user.likes_count++;
@@ -223,14 +237,101 @@ class VideoController {
     // [Auth]
     //[GET] /videos/:id/comments
     getCommentsListVideo(req, res, next) {
-        res.json(req.params);
+        const videoId = req.params.id;
+        // console.log('req.params._id: ',req.params.id);
+        const idMe = res.locals.idUser;
+        let commentMeLike = [];
+        // res.json(idvideo);
+        Users.findById({ _id: idMe })
+                .then((me) => { 
+                    if (!me) {
+                        res.status(404).json({ message: 'User not found' });
+                    }
+                    commentMeLike = me.likedComments; 
+                    // console.log('commentMeLike: ',user.likedComments);
+                })
+                .then(() => {
+                    return  Videos.findById(videoId)
+                                .populate({
+                                path: 'comments',
+                                populate: { path: 'user', select: '-password' }
+                    })
+                })
+                .then(video => {
+                    if (!video) {
+                        return res.status(404).json({ message: 'Video not found' });
+                    }
+                    const comments = video.comments;
+                    comments.forEach((comment) => {
+                         if(commentMeLike.includes(comment._id.toString())){
+                            comment.is_liked = true;
+                        }    
+                    })  
+                    res.json(comments); 
+                })
+                .catch(next);
+
+
+        // Videos.findById(videoId)
+        //     .populate({
+        //     path: 'comments',
+        //     populate: { path: 'user', select: '-password' }
+        //     })
+        //     .then(video => {
+        //         if (!video) {
+        //             return res.status(404).json({ message: 'Video not found' });
+        //         }
+
+        //         const comments = video.comments;
+        //         res.json(comments);
+        //     })
+        //     .catch(next);
     }
 
     // [Auth]
     //[POST] /videos/:id/comments
-    createCommentVideo(req, res, next) {
-        res.json(req.params);
+    createCommentVideo(req, res, next) { 
+        const idMe = res.locals.idUser;
+        const content = req.body.comment;
+        const videoId = req.params.id;
+        const comment = new Comments({
+            comment: content,
+            user: idMe,
+            video: videoId
+        });
+        // console.log(comment);
+        let idCommment;
+        comment.save() 
+        .then(savedComment => {
+            idCommment = savedComment._id;
+            return (Videos.findByIdAndUpdate(videoId, { $push: { comments: savedComment._id }, $inc: { comments_count: 1 } }, { new: true }))
+            
+        })
+        .then(() => {
+            return Comments.findById({ _id: idCommment}).populate('user').exec()
+        })
+        .then((comments) => {
+            res.json(comments)
+        })
+        .catch(err => next(err));
+         
     }
+
+    // [Auth] 
+    // [DELETE] videos/:id
+    deleteVideo(req, res, next) {
+        const videoId = req.params.id; 
+        const idMe = res.locals.idUser; 
+        Videos.findByIdAndDelete(videoId)
+          .then(() => {
+            return Users.findByIdAndUpdate(idMe, { $pull: { videos: videoId }}, { new: true })
+          })
+          .then(() => {
+            res.status(204).send();
+          })
+          .catch(next);
+      }
+
 
 
 
