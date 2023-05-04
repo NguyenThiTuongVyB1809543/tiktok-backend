@@ -1,6 +1,7 @@
 const Videos = require('../models/Video');
 const Users = require('../models/User');
 const Comments = require('../models/Comment');
+const Notifications = require('../models/Notification');
 const { mongooseToObject } = require('../../util/monggoose');
 const { response } = require('express');
 const multer = require('multer');
@@ -38,6 +39,16 @@ class CommentController {
                 }
                 if (commentLike.likes.includes(idMe)) {
                     res.status(400).json({ message: 'you already liked this comment' });
+                }
+                if(idMe != commentLike.user._id){
+                    const notification = new Notifications({
+                        type: 'like_comment',
+                        fromUser: idMe,
+                        user: commentLike.user._id,
+                        comment: commentLike._id,
+                        createdAt: new Date() 
+                    });
+                    notification.save();
                 }
                 commentLike.likes.push(idMe);
                 commentLike.likes_count++;  

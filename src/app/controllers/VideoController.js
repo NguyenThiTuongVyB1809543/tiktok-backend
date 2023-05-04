@@ -1,6 +1,7 @@
 const Videos = require('./../models/Video');
 const Users = require('./../models/User');
 const Comments = require('./../models/Comment');
+const Notifications = require('../models/Notification');
 const { mongooseToObject } = require('../../util/monggoose');
 const { response } = require('express');
 const multer = require('multer');
@@ -157,7 +158,17 @@ class VideoController {
                 if (!videoLike) {
                     res.status(404).json({ message: 'Video not found' });
                 }
-                 
+                if(idMe != videoLike.user._id){
+                    const notification = new Notifications({
+                        type: 'like',
+                        fromUser: idMe,
+                        user: videoLike.user._id,
+                        video: videoLike._id,
+                        createdAt: new Date() 
+                    });
+                    notification.save();
+                }
+                
                 if (videoLike.likes.includes(idMe)) {
                     res.status(400).json({ message: 'you already liked this video' });
                 }
@@ -302,15 +313,29 @@ class VideoController {
         // console.log(comment);
         let idCommment;
         comment.save() 
+        
         .then(savedComment => {
             idCommment = savedComment._id;
-            return (Videos.findByIdAndUpdate(videoId, { $push: { comments: savedComment._id }, $inc: { comments_count: 1 } }, { new: true }))
+            return (Videos.findByIdAndUpdate(videoId, { $push: { comments: savedComment._id }, $inc: { comments_count: 1 } }, { new: true })).populate('user').exec()
             
         })
-        .then(() => {
+        .then((videoComment) => {
+            if(idMe != videoComment.user._id){
+                const notification = new Notifications({
+                    type: 'comment',
+                    fromUser: idMe,
+                    user: videoComment.user._id,
+                    video: videoComment._id,
+                    createdAt: new Date() 
+                });
+                notification.save();
+            }
+            
             return Comments.findById({ _id: idCommment}).populate('user').exec()
         })
         .then((comments) => {
+            
+            // console.log(comments);
             res.json(comments)
         })
         .catch(err => next(err));

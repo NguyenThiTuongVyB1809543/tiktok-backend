@@ -10,6 +10,7 @@ const NotificationSchema = new Schema(
         fromUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },// ID of the user who triggered the notification
         video: { type: mongoose.Schema.Types.ObjectId, ref: 'Video'},
         comment: { type: mongoose.Schema.Types.ObjectId, ref: 'Comment'},
+        follow: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
         read: { type: Boolean, default: false },// Indicates whether the notification has been read
         createdAt: { type: Date, default: Date.now },
          
