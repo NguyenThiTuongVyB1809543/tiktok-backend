@@ -22,30 +22,7 @@ class UserController {
         Users.find().skip(skip).limit(limit)
             .then(users => res.json(users)); 
     }
-    chongTreo(req, res, next) { //1 middleware nên có next() hoặc phải có res.send() nếu không sẽ bị treo 
-        Users.find({})
-            .then(user => res.json(
-                user
-                ))
-            .catch(next);
-    } 
- 
-
-    //[GET] /users/@:nickname
-    // getAnUser = async (req, res) => {
-    //     const { nickname } = req.params;
       
-    //     // Look for a user with the provided nickname
-    //     const user = await Users.findOne({ nickname });
-      
-    //     // If no user is found, return an error
-    //     if (!user) {
-    //       return res.status(404).json({ message: 'User not found' });
-    //     }
-      
-    //     // If the user is found, return the user data
-    //     res.status(200).json(user);
-    // };  
     getAnUser (req, res, next) { 
         const idMe = res.locals.idUser;
         let userMeFollowing  = [];
@@ -56,6 +33,26 @@ class UserController {
             })
             .then(() => {
                 return Users.findOne({nickname: req.params.nickname}).populate('videos').exec()
+            })
+            
+            .then(users => {
+                if(userMeFollowing.includes(users._id.toString())){
+                    users.is_followed = true;
+                }
+                res.json(users);
+            })
+            .catch(next);  
+    }
+    getAnUserProducts (req, res, next) { 
+        const idMe = res.locals.idUser;
+        let userMeFollowing  = [];
+        Users.findById({_id: idMe})
+            .then((user) => {
+                userMeFollowing = user.following; 
+            })
+            .then(() => {
+                // return Users.findOne({nickname: req.params.nickname}).populate('videos').exec()
+                return Users.findOne({nickname: req.params.nickname}).populate('products').exec()
             })
             
             .then(users => {
@@ -143,21 +140,7 @@ class UserController {
                     if (otherPeople.followers.includes(idMe)) {
                         res.status(400).json({ message: 'You are follower of this user' });
                     }
-                    // if(idMe != otherPeople._id){
-                    //     otherPeople.followers.push(idMe);
-                    //     otherPeople.followers_count++;
-                    //     // is_followed = true;
-                    //     // console.log('người ta nè: ',otherPeople);
                     
-                    //     const notification = new Notifications({
-                    //         type: 'follow',
-                    //         fromUser: idMe,
-                    //         user: otherPeople._id, 
-                    //         createdAt: new Date() 
-                    //     });
-                    //     notification.save(); 
-                    //     return otherPeople.save(); 
-                    // }
                     otherPeople.followers.push(idMe);
                     otherPeople.followers_count++;
                     // is_followed = true;
@@ -238,13 +221,7 @@ class UserController {
             })
             .catch(next);
             
-             
-        
-         
-    }
-
-      
-       
+    }  
 
 }
 

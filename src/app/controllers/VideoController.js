@@ -152,9 +152,7 @@ class VideoController {
             .then(() => {
                 return Videos.findById({_id: idVideoLike}).populate('user').exec();
             })
-            .then((videoLike) => {
-                // console.log('otherPeople nè: ',otherPeople);
-
+            .then((videoLike) => {  
                 if (!videoLike) {
                     res.status(404).json({ message: 'Video not found' });
                 }

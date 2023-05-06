@@ -16,19 +16,13 @@ router.post('/:id/follow',authMiddleware.isAuth, userController.followAUser);
 // [Auth]
 // /users/:id/unfollow
 router.post('/:id/unfollow',authMiddleware.isAuth, userController.unFollowAUser);
-
-
-// [Auth]
-// router.get('/1/like-videos', userController.getVideoLikeByUser);
-
-// router.get('/1/videos', userController.getVideoOfUser);
-
+ 
 // /users/suggested?page=1&per_page=12
-// router.get('/suggested', userController.getSuggestedUserList, userController.chongTreo );
 router.get('/suggested', userController.getSuggestedUserList  );
 
 // /users/@sondnf8
 router.get('/@:nickname',authMiddleware.isAuth, userController.getAnUser);
+router.get('/@:nickname/products',authMiddleware.isAuth, userController.getAnUserProducts);
 
 router.get('/show', userController.showUser);
 
