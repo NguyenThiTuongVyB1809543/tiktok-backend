@@ -22,6 +22,7 @@ router.get('/suggested', userController.getSuggestedUserList  );
 
 // /users/@sondnf8
 router.get('/@:nickname',authMiddleware.isAuth, userController.getAnUser);
+router.get('/:id',authMiddleware.isAuth, userController.getCurrentUser);
 router.get('/@:nickname/products',authMiddleware.isAuth, userController.getAnUserProducts);
 
 router.get('/show', userController.showUser);

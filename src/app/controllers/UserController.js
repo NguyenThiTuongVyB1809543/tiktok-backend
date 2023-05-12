@@ -43,6 +43,21 @@ class UserController {
             })
             .catch(next);  
     }
+
+
+
+
+    getCurrentUser (req, res, next) { 
+        const idMe = res.locals.idUser; 
+        Users.findById(idMe)
+            .then((user) => {
+                res.json(user);
+                // console.log(userMeFollowing);
+            }) 
+            .catch(next);  
+    }
+
+
     getAnUserProducts (req, res, next) { 
         const idMe = res.locals.idUser;
         let userMeFollowing  = [];

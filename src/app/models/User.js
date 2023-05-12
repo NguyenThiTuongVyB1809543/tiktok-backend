@@ -10,6 +10,8 @@ const UserSchema = new Schema(
         password: { type: String },
         displayName: { type: String },
         fullname: { type: String },
+        address: { type: String },
+        phone: { type: String },
         first_name: { type: String },
         last_name: { type: String },
         followings_count: { type: Number, default: 0 },

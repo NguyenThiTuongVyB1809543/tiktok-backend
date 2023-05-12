@@ -4,12 +4,19 @@ const slug = require('mongoose-slug-generator');
 var mongooseDelete = require('mongoose-delete');
 
 const OrderSchema = new Schema(
-    { 
-        user: { type: mongoose.Schema.Types.ObjectId, ref: 'User'}, //ai đã mua đơn hàng này
-        products: { type: mongoose.Schema.Types.ObjectId, ref: 'Product'},//Có những sản phẩm nào 
-        fromUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, //mua từ ai 
-        total: { type: Number, default: 0},//tổng tiền cho đơn hàng đó 
-        createdAt: { type: Date, default: Date.now },
+    {  
+        user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+        seller: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+        products: [
+            {
+            product: { type: Schema.Types.ObjectId, ref: 'Product', required: true }, 
+            quantity: { type: Number, default: 1 },
+            price: { type: Number, required: true }
+            }
+        ],
+        totalPrice: { type: Number, required: true },
+        status: { type: String, default: 'pending' },
+        createdAt: { type: Date, default: Date.now }
          
     },
     {

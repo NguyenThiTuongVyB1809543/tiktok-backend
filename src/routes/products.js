@@ -1,12 +1,13 @@
-//để quản lí những cái router liên quan tới thằng auth
 const express = require('express');
 const router = express.Router();
 const productController = require('../app/controllers/ProductController');
 const authMiddleware = require('../app/controllers/auth.middlewares');
   
-// [Auth]
+// [Auth] 
+router.get('/:id',  productController.getAProduct);
+router.delete('/:id',authMiddleware.isAuth,  productController.deleteAProduct);
 router.post('/', authMiddleware.isAuth, productController.postProduct);
-router.get('/show', authMiddleware.isAuth, productController.getListProduct);
+router.post('/edit', authMiddleware.isAuth, productController.editProduct);
  
 
 module.exports = router;

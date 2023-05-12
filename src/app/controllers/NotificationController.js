@@ -9,11 +9,21 @@ class NotificationController {
         const idMe = res.locals.idUser;
         Notifications.find({ user: idMe }).populate('fromUser').populate('video').sort({createdAt: 'desc'}).exec()
             .then((notifications) => { 
+                // console.log('res.json(notifications) : ',notifications.video._id )
                 res.json(notifications);
             })
             .catch(next)
 
+            // Notifications{
+            //     fromUser{
 
+            //     }
+            //     video{
+            //         user{
+
+            //         }
+            //     }
+            // }
 
         // Users.findById(idMe)
         //     .then(me => { 
