@@ -16,6 +16,7 @@ router.post('/logout', authController.logout);
 // /auth/update
 // router.post('/update',authMiddleware.isAuth, authController.updateCurrentUser);
 router.post('/update',  authController.updateCurrentUser);
+router.post('/edit_address',  authController.editAddressCurrentUser);
  
 // [Auth] Get followings list
 // router.get('/me/followings',authMiddleware.isAuth, authController.getFollowingList);

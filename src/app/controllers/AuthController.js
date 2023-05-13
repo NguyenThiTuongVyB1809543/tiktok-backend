@@ -156,6 +156,22 @@ class AuthController {
 
 
     }
+    // [Auth]
+    // /auth/update
+    editAddressCurrentUser(req, res, next) {
+      // res.json(req.body);
+      const address = req.body.address; 
+      const phone = req.body.phone; 
+      const userId = req.body.userId;
+       
+      Users.findOneAndUpdate({_id: userId}, {$set: {address: address, phone: phone}}, { new: true })
+        .then((user) => {
+          res.json(user);
+        })
+        .catch(next);
+
+
+    }
 
  
     //[GET] /auth/
