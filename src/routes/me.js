@@ -5,6 +5,7 @@ const meController = require('../app/controllers/MeController');
 const authMiddleware = require('../app/controllers/auth.middlewares');
 // [Auth]
 // /me/followings?page=1
+router.get('/followings/products',authMiddleware.isAuth, meController.getFollowingProductList); 
 router.get('/followings',authMiddleware.isAuth, meController.getFollowingList); 
 
  

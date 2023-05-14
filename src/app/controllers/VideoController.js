@@ -19,7 +19,6 @@ class VideoController {
     }
     //[GET] /videos/unlogin?type=for-you&page=1  
     getVideoList(req, res, next) {
-         
     }
      
 

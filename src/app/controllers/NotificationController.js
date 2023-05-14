@@ -7,9 +7,9 @@ class NotificationController {
      
     getListNotification(req, res, next) { 
         const idMe = res.locals.idUser;
-        Notifications.find({ user: idMe }).populate('fromUser').populate('video').sort({createdAt: 'desc'}).exec()
+        Notifications.find({ user: idMe }).populate('fromUser').populate({path: 'video', populate: { path: 'user'}}).sort({createdAt: 'desc'}).exec()
             .then((notifications) => { 
-                // console.log('res.json(notifications) : ',notifications.video._id )
+                // console.log('res.json(notifications) : ',notifications )
                 res.json(notifications);
             })
             .catch(next) 

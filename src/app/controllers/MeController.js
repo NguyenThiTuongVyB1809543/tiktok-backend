@@ -1,4 +1,5 @@
 const Users = require('../models/User'); 
+const Products = require('../models/Product'); 
 const { mongooseToObject } = require('../../util/monggoose');
 const { response, request } = require('express');  
 const randToken = require('rand-token');
@@ -54,6 +55,34 @@ class AuthController {
       }) 
       .then(users => res.json(users)) 
       .catch(next);
+  } 
+
+  // [Auth] /me/followings/products Get product list
+  getFollowingProductList(req, res, next){ 
+    const idMe = res.locals.idUser; 
+    // console.log('res.locals: ', res.locals);
+    let userMeFollowing  = []; 
+    Users.findById({ _id: idMe })
+        .then((user) => {
+            userMeFollowing = user.following; 
+        })
+        .then(() => {
+            const userIDs = userMeFollowing.map((id) => id.toString());
+            return Products.find({ user: { $in: userIDs } }).populate('user').sort({createdAt: 'desc'}).exec()
+        })
+        .then(products => {
+            products.forEach((product) => {
+                // console.log('video user: ', video.user._id);
+                if(userMeFollowing.includes(product.user._id.toString())){
+                  product.user.is_followed = true;
+                }  
+            }) 
+             
+            // console.log('products: ', products);
+            res.json(products);
+        })
+        .catch(next);
+         
   } 
    
      

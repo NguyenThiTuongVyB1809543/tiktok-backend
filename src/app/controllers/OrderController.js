@@ -79,7 +79,7 @@ class OrderController {
     const userId = res.locals.idUser; 
     Orders.find({ user: userId })
       .populate('seller')
-      .populate('products.product')
+      .populate('products.product').sort({createdAt: 'desc'})
       .then((orders) => {
         res.status(200).json(orders);
         // console.log("lịch sữ mua hàng: ", orders);
@@ -94,7 +94,7 @@ class OrderController {
     const userId = res.locals.idUser; 
     Orders.find({ seller: userId })
       .populate('user')
-      .populate('products.product')
+      .populate('products.product').sort({createdAt: 'desc'})
       .then((orders) => {
         res.status(200).json(orders);
       })
